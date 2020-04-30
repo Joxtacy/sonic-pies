@@ -40,3 +40,12 @@ define :get_remaining_sleep do |remain, attempt|
     return attempt
   end
 end
+
+# Returns note length.
+# Examples:
+# l = 8 => Eight note
+# l = 3 => Whole triplet
+# l = 12 => Quarter triplet
+define :note_length do |l|
+  4.0 / l
+end
