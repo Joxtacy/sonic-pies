@@ -77,3 +77,10 @@ define :nes_arp do |notes, length, *args|
   play notes[tick%nbr_notes], duration: remain, release: 0, attack: 0
   sleep remain
 end
+
+# Plays an NES style bass drum.
+define :nes_bd do
+  use_synth :tri
+  play :c3, slide: 0.05, release: 0.1
+  control note: :c1
+end
