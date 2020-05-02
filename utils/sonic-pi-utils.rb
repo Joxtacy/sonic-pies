@@ -49,3 +49,31 @@ end
 define :note_length do |l|
   4.0 / l
 end
+
+# Plays an NES style arpeggio with a rate of 50 Hz.
+# *notes* is an array and *length* is the length in beats
+# for which the arpeggio should play.
+# *synth* is an optional argument, defaults to :chiplead.
+define :nes_arp do |notes, length, *args|
+  defaults = {
+    synth: :chiplead
+  }
+
+  ag = args[0]
+  ag = defaults if ag == nil
+  ag = defaults.merge(ag)
+  use_synth ag[:synth]
+
+  rate = rt(1.0/50)
+  beat_length = bt(length)
+  nbr_notes = notes.length
+
+  remain = beat_length
+  while remain > rate
+    play notes[tick%nbr_notes], duration: rate, release: 0, attack: 0
+    remain -= rate
+    sleep rate
+  end
+  play notes[tick%nbr_notes], duration: remain, release: 0, attack: 0
+  sleep remain
+end
