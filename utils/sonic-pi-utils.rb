@@ -23,10 +23,12 @@ end
 # for *n* number of times with a random sleep of (0.25, 2)
 # between each play.
 define :haunted_bells do |n|
-  with_fx :reverb do
-    n.times do
-      sample :perc_bell, rate: [rrand(-2, -0.035), rrand(0.035, 2)].choose
-      sleep rrand(0.25, 2)
+  in_thread do
+    with_fx :reverb do
+      n.times do
+        sample :perc_bell, rate: [rrand(-2, -0.035), rrand(0.035, 2)].choose
+        sleep rrand(0.25, 2)
+      end
     end
   end
 end
@@ -55,27 +57,29 @@ end
 # for which the arpeggio should play.
 # *synth* is an optional argument, defaults to :chiplead.
 define :nes_arp do |notes, length, *args|
-  defaults = {
-    synth: :chiplead
-  }
+  in_thread do
+    defaults = {
+      synth: :chiplead
+    }
 
-  ag = args[0]
-  ag = defaults if ag == nil
-  ag = defaults.merge(ag)
-  use_synth ag[:synth]
+    ag = args[0]
+    ag = defaults if ag == nil
+    ag = defaults.merge(ag)
+    use_synth ag[:synth]
 
-  rate = rt(1.0/50)
-  beat_length = bt(length)
-  nbr_notes = notes.length
+    rate = rt(1.0/50)
+    beat_length = bt(length)
+    nbr_notes = notes.length
 
-  remain = beat_length
-  while remain > rate
-    play notes[tick%nbr_notes], duration: rate, release: 0, attack: 0
-    remain -= rate
-    sleep rate
+    remain = beat_length
+    while remain > rate
+      play notes[tick%nbr_notes], duration: rate, release: 0, attack: 0
+      remain -= rate
+      sleep rate
+    end
+    play notes[tick%nbr_notes], duration: remain, release: 0, attack: 0
+    sleep remain
   end
-  play notes[tick%nbr_notes], duration: remain, release: 0, attack: 0
-  sleep remain
 end
 
 # Plays an NES style bass drum.
