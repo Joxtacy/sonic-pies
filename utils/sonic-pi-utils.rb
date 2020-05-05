@@ -140,13 +140,22 @@ end
 # *length* is the distance from which the source starts out in meters
 define :doppler do |note, speed, synth, length|
   in_thread do
+    defaults = {
+      amp: 1,
+      synth: :beep
+    }
+
+    ag = args[0]
+    ag = defaults if ag == nil
+    ag = defaults.merge(ag)
+
     f0 = midi_to_hz(note)
     fb = (1 + speed/343.0) * f0
     fa = (1 - speed/343.0) * f0
 
     sec = length / (speed * 1.0)
 
-    s = synth synth, note: hz_to_midi(fb), pan_slide: sec * 2, pan: 1, attack: sec, release: sec, env_curve: 7
+    s = synth ag[:synth], note: hz_to_midi(fb), pan_slide: sec * 2, pan: 1, attack: sec, release: sec, env_curve: 7, amp: ag[:amp]
     control s, pan: -1
     sleep sec - 0.095
     control s, note: hz_to_midi(fa), note_slide: 0.1
