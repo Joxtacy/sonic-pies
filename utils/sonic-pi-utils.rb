@@ -88,3 +88,23 @@ define :nes_bd do
   play :c3, slide: 0.05, release: 0.1
   control note: :c1
 end
+
+# A doppler effect style function.
+# *note* is your f0 in midi form
+# *speed* is the speed of the source in m/s
+# *synth* is what synth you want to use
+# *length* is the distance from which the source starts out in meters
+define :doppler do |note, speed, synth, length|
+  in_thread do
+    f0 = midi_to_hz(note)
+    fb = (1 + speed/343.0) * f0
+    fa = (1 - speed/343.0) * f0
+
+    sec = length / (speed * 1.0)
+
+    s = synth synth, note: hz_to_midi(fb), pan_slide: sec * 2, pan: 1, attack: sec, release: sec, env_curve: 7
+    control s, pan: -1
+    sleep sec - 0.095
+    control s, note: hz_to_midi(fa), note_slide: 0.1
+  end
+end
