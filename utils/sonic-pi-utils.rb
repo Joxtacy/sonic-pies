@@ -83,29 +83,53 @@ define :nes_arp do |notes, length, *args|
 end
 
 # Plays an NES style bass drum.
-define :nes_bd do
+define :nes_bd do |*args|
+  defaults = {
+    amp: 1
+  }
+
+  ag = args[0]
+  ag = defaults if ag == nil
+  ag = defaults.merge(ag)
+
   use_synth :tri
-  play :c3, slide: 0.05, release: 0.1
+  play :c3, slide: 0.05, release: 0.1, amp: ag[:amp]
   control note: :c1
 end
 
 # Plays an NES style snare.
-define :nes_sn do
+define :nes_sn do |*args|
   in_thread do
+    defaults = {
+      amp: 1
+    }
+
+    ag = args[0]
+    ag = defaults if ag == nil
+    ag = defaults.merge(ag)
+
     use_synth :fm
     use_synth_defaults divisor: 1.6666, attack: 0.0, depth: 1500, sustain: 0.06, release: 0.0, slide: 0.05
 
-    s = play :c7
+    s = play :c7, amp: ag[:amp]
     control s, note: :c6
   end
 end
 
 # Plays an NES style hi hat.
-define :nes_hh do
+define :nes_hh do |*args|
   in_thread do
+    defaults = {
+      amp: 1
+    }
+
+    ag = args[0]
+    ag = defaults if ag == nil
+    ag = defaults.merge(ag)
+
     use_synth :cnoise
     use_synth_defaults attack: 0, sustain: 0, release: 0.05
-    play :a
+    play :a, amp: ag[:amp]
   end
 end
 
