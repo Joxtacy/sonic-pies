@@ -89,6 +89,26 @@ define :nes_bd do
   control note: :c1
 end
 
+# Plays an NES style snare.
+define :nes_sn do
+  in_thread do
+    use_synth :fm
+    use_synth_defaults divisor: 1.6666, attack: 0.0, depth: 1500, sustain: 0.06, release: 0.0, slide: 0.05
+
+    s = play :c7
+    control s, note: :c6
+  end
+end
+
+# Plays an NES style hi hat.
+define :nes_hh do
+  in_thread do
+    use_synth :cnoise
+    use_synth_defaults attack: 0, sustain: 0, release: 0.05
+    play :a
+  end
+end
+
 # A doppler effect style function.
 # *note* is your f0 in midi form
 # *speed* is the speed of the source in m/s
