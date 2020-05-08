@@ -5,7 +5,8 @@ define :svavning do |note, *args| # synth, freq, attack, release, sustain
     freq: 1,
     attack: 12,
     release: 8,
-    sustain: 0
+    sustain: 0,
+    pan: 0.5
   }
 
   ag = args[0]
@@ -15,8 +16,9 @@ define :svavning do |note, *args| # synth, freq, attack, release, sustain
   use_synth ag[:synth]
   beat_note = hz_to_midi(midi_to_hz(note) + ag[:freq])
 
-  play note, attack: ag[:attack], release: ag[:release], sustain: ag[:sustain], pan: 0.5
-  play beat_note, attack: ag[:release], release: ag[:attack], sustain: ag[:sustain], pan: -0.5
+  a = play note, attack: ag[:attack], release: ag[:release], sustain: ag[:sustain], pan: ag[:pan]
+  b = play beat_note, attack: ag[:release], release: ag[:attack], sustain: ag[:sustain], pan: -ag[:pan]
+  [a, b]
 end
 
 # Plays the perc_bell sample with a random rate of (-2, 2)
