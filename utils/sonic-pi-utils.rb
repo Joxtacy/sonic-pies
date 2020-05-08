@@ -21,6 +21,13 @@ define :svavning do |note, *args| # synth, freq, attack, release, sustain
   [a, b]
 end
 
+# Add *freq* Hz to the provided MIDI *note*.
+# Returns a new MIDI note
+define :add_freq_to_midi do |note, freq|
+  f = midi_to_hz(note) + freq
+  return hz_to_midi(f)
+end
+
 # Plays the perc_bell sample with a random rate of (-2, 2)
 # for *n* number of times with a random sleep of (0.25, 2)
 # between each play.
