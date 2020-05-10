@@ -106,6 +106,27 @@ define :nes_bd do |*args|
   control note: :c1
 end
 
+# Plays a bass note preceded by a bass drum like kick to it.
+define :nes_bd_bass do |n, *args|
+  in_thread do
+    defaults = {
+      amp: 1,
+      sustain: 0.5,
+      attack: 0,
+      release: 0.05,
+      note_slide: 0.05
+    }
+
+    ag = args[0]
+    ag = defaults if ag == nil
+    ag = defaults.merge(ag)
+
+    use_synth :chipbass
+    s = play :c4, note_slide: ag[:note_slide], release: ag[:release], attack: ag[:attack], sustain: ag[:sustain]
+    control s, note: n
+  end
+end
+
 # Plays an NES style snare.
 define :nes_sn do |*args|
   in_thread do
